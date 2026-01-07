@@ -1,7 +1,7 @@
 # Langfuse Go SDK
 
 
-[![GoDoc](https://godoc.org/github.com/henomis/langfuse-go?status.svg)](https://godoc.org/github.com/henomis/langfuse-go) [![Go Report Card](https://goreportcard.com/badge/github.com/henomis/langfuse-go)](https://goreportcard.com/report/github.com/henomis/langfuse-go) [![GitHub release](https://img.shields.io/github/release/henomis/langfuse-go.svg)](https://github.com/henomis/langfuse-go/releases)
+[![GoDoc](https://godoc.org/github.com/optible/langfuse-go?status.svg)](https://godoc.org/github.com/optible/langfuse-go) [![Go Report Card](https://goreportcard.com/badge/github.com/optible/langfuse-go)](https://goreportcard.com/report/github.com/optible/langfuse-go) [![GitHub release](https://img.shields.io/github/release/optible/langfuse-go.svg)](https://github.com/optible/langfuse-go/releases)
 
 This is [Langfuse](https://langfuse.com)'s **unofficial** Go client, designed to enable you to use Langfuse's services easily from your own applications.
 
@@ -14,11 +14,12 @@ This is [Langfuse](https://langfuse.com)'s **unofficial** Go client, designed to
 
 | **Index Operations**  | **Status** |
 | --- | --- |
-| Trace | 🟢 | 
+| Trace | 🟢 |
 | Generation | 🟢 |
 | Span | 🟢 |
 | Event | 🟢 |
 | Score | 🟢 |
+| GetPrompt | 🟢 |
 
 
 
@@ -29,7 +30,7 @@ This is [Langfuse](https://langfuse.com)'s **unofficial** Go client, designed to
 
 You can load langfuse-go into your project by using:
 ```
-go get github.com/henomis/langfuse-go
+go get github.com/optible/langfuse-go
 ```
 
 
@@ -53,8 +54,8 @@ package main
 import (
 	"context"
 
-	"github.com/henomis/langfuse-go"
-	"github.com/henomis/langfuse-go/model"
+	"github.com/optible/langfuse-go"
+	"github.com/optible/langfuse-go/model"
 )
 
 func main() {
