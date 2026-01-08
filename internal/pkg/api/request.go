@@ -5,14 +5,12 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/henomis/langfuse-go/model"
+	"github.com/optible/langfuse-go/model"
 )
 
 const (
 	ContentTypeJSON = "application/json"
 )
-
-type Request struct{}
 
 type Ingestion struct {
 	Batch []model.IngestionEvent `json:"batch"`
