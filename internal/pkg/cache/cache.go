@@ -7,9 +7,8 @@ import (
 
 // Entry represents a cached item with expiration
 type Entry[T any] struct {
-	Value      T
-	ExpiresAt  time.Time
-	IsFallback bool
+	Value     T
+	ExpiresAt time.Time
 }
 
 // IsExpired returns true if the entry has expired
@@ -53,9 +52,8 @@ func (c *Cache[T]) Set(key string, value T) {
 	defer c.mu.Unlock()
 
 	c.entries[key] = &Entry[T]{
-		Value:      value,
-		ExpiresAt:  time.Now().Add(c.ttl),
-		IsFallback: false,
+		Value:     value,
+		ExpiresAt: time.Now().Add(c.ttl),
 	}
 }
 
@@ -65,9 +63,8 @@ func (c *Cache[T]) SetWithTTL(key string, value T, ttl time.Duration) {
 	defer c.mu.Unlock()
 
 	c.entries[key] = &Entry[T]{
-		Value:      value,
-		ExpiresAt:  time.Now().Add(ttl),
-		IsFallback: false,
+		Value:     value,
+		ExpiresAt: time.Now().Add(ttl),
 	}
 }
 

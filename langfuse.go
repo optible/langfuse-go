@@ -178,7 +178,7 @@ func (l *Langfuse) fetchPrompt(ctx context.Context, name string, opts *GetPrompt
 	}
 
 	// Parse the response
-	prompt, err := l.parsePromptResponse(body)
+	prompt, err := parsePromptResponse(body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse prompt response: %w", err)
 	}
@@ -196,7 +196,7 @@ func (l *Langfuse) fetchPrompt(ctx context.Context, name string, opts *GetPrompt
 }
 
 // parsePromptResponse parses the API response into a Prompt
-func (l *Langfuse) parsePromptResponse(body []byte) (*model.Prompt, error) {
+func parsePromptResponse(body []byte) (*model.Prompt, error) {
 	// First, parse the common fields to determine the type
 	var rawPrompt struct {
 		Type            string         `json:"type"`
