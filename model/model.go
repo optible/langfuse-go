@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 type IngestionEventType string
 
@@ -164,7 +167,7 @@ func (p *TextPrompt) Compile(variables map[string]string) string {
 	result := p.Prompt
 	for key, value := range variables {
 		placeholder := "{{" + key + "}}"
-		result = replaceAll(result, placeholder, value)
+		result = strings.ReplaceAll(result, placeholder, value)
 	}
 	return result
 }
@@ -190,7 +193,7 @@ func (p *ChatPrompt) Compile(variables map[string]string) []ChatMessage {
 		content := msg.Content
 		for key, value := range variables {
 			placeholder := "{{" + key + "}}"
-			content = replaceAll(content, placeholder, value)
+			content = strings.ReplaceAll(content, placeholder, value)
 		}
 		result[i] = ChatMessage{
 			Role:    msg.Role,
@@ -271,24 +274,3 @@ func (p *Prompt) GetTags() []string {
 	return nil
 }
 
-// replaceAll is a simple string replacement function
-func replaceAll(s, old, new string) string {
-	result := ""
-	for {
-		i := indexOf(s, old)
-		if i == -1 {
-			return result + s
-		}
-		result += s[:i] + new
-		s = s[i+len(old):]
-	}
-}
-
-func indexOf(s, substr string) int {
-	for i := 0; i <= len(s)-len(substr); i++ {
-		if s[i:i+len(substr)] == substr {
-			return i
-		}
-	}
-	return -1
-}

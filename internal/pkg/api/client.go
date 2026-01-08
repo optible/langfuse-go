@@ -6,9 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"os"
-	"strconv"
 
 	"github.com/henomis/restclientgo"
 )
@@ -45,45 +43,6 @@ func (c *Client) Ingestion(ctx context.Context, req *Ingestion, res *IngestionRe
 	return c.restClient.Post(ctx, req, res)
 }
 
-// GetPrompt fetches a prompt by name with optional version or label
-func (c *Client) GetPrompt(ctx context.Context, req *GetPromptRequest, res *PromptResponse) error {
-	// Build URL with query parameters
-	path := "/api/public/v2/prompts/" + url.PathEscape(req.Name)
-
-	params := url.Values{}
-	if req.Version != nil {
-		params.Set("version", strconv.Itoa(*req.Version))
-	}
-	if req.Label != nil {
-		params.Set("label", *req.Label)
-	}
-
-	if len(params) > 0 {
-		path = path + "?" + params.Encode()
-	}
-
-	// Create a simple GET request wrapper
-	getReq := &simpleGetRequest{path: path}
-	return c.restClient.Get(ctx, getReq, res)
-}
-
-// simpleGetRequest is a helper for GET requests with custom paths
-type simpleGetRequest struct {
-	path string
-}
-
-func (r *simpleGetRequest) Path() (string, error) {
-	return r.path, nil
-}
-
-func (r *simpleGetRequest) Encode() (io.Reader, error) {
-	return nil, nil
-}
-
-func (r *simpleGetRequest) ContentType() string {
-	return ""
-}
-
 // GetHost returns the configured Langfuse host
 func (c *Client) GetHost() string {
 	host := os.Getenv("LANGFUSE_HOST")
@@ -114,16 +73,9 @@ func (c *Client) DoGetRequest(ctx context.Context, urlPath string) ([]byte, int,
 	}
 	defer resp.Body.Close()
 
-	body := make([]byte, 0)
-	buf := make([]byte, 1024)
-	for {
-		n, readErr := resp.Body.Read(buf)
-		if n > 0 {
-			body = append(body, buf[:n]...)
-		}
-		if readErr != nil {
-			break
-		}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, resp.StatusCode, fmt.Errorf("failed to read response body: %w", err)
 	}
 
 	return body, resp.StatusCode, nil
