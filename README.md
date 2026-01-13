@@ -29,6 +29,7 @@ This is [Langfuse](https://langfuse.com)'s **unofficial** Go client, designed to
 | Span | 🟢 | Measure execution spans within traces |
 | Event | 🟢 | Log custom events in traces |
 | Score | 🟢 | Add evaluations and scores to traces/sessions |
+| DeleteScore | 🟢 | Delete scores by ID |
 | GetPrompt | 🟢 | Fetch prompts with caching, versioning, and labels |
 
 
@@ -147,7 +148,7 @@ func main() {
 	}
 
 	// Add a score
-	_, err = l.Score(
+	score, err := l.Score(
 		&model.Score{
 			TraceID: trace.ID,
 			Name:    "quality-score",
@@ -159,6 +160,12 @@ func main() {
 		panic(err)
 	}
 
+	// Delete a score (optional)
+	// err = l.DeleteScore(ctx, score.ID)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
 	// End the span
 	_, err = l.SpanEnd(span)
 	if err != nil {
@@ -169,6 +176,56 @@ func main() {
 	l.Flush(ctx)
 }
 ```
+
+#### Score Deletion Example
+
+The SDK supports deleting scores once they've been created. This is useful for removing incorrect or outdated scores:
+
+```go
+package main
+
+import (
+	"context"
+
+	"github.com/optible/langfuse-go"
+	"github.com/optible/langfuse-go/model"
+)
+
+func main() {
+	ctx := context.Background()
+	l := langfuse.New(ctx)
+
+	// Create a trace
+	trace, err := l.Trace(&model.Trace{
+		Name: "my-llm-app",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	// Add a score and capture its ID
+	score, err := l.Score(&model.Score{
+		TraceID: trace.ID,
+		Name:    "quality-score",
+		Value:   0.95,
+		Comment: "Initial quality assessment",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	// Delete the score if needed (e.g., if it was incorrect)
+	err = l.DeleteScore(ctx, score.ID)
+	if err != nil {
+		panic(err)
+	}
+
+	// Flush all pending events
+	l.Flush(ctx)
+}
+```
+
+**Note**: Score deletion is asynchronous on the Langfuse backend. The score may remain visible for a short time after deletion.
 
 #### Prompt Management Example
 

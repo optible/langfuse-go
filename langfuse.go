@@ -352,6 +352,26 @@ func (l *Langfuse) Score(s *model.Score) (*model.Score, error) {
 	return s, nil
 }
 
+// DeleteScore deletes a score by its ID.
+// The scoreID parameter is required and must be a valid score ID.
+func (l *Langfuse) DeleteScore(ctx context.Context, scoreID string) error {
+	if scoreID == "" {
+		return fmt.Errorf("score ID is required")
+	}
+
+	path := fmt.Sprintf("/api/public/scores/%s", scoreID)
+	body, statusCode, err := l.client.DoDeleteRequest(ctx, path)
+	if err != nil {
+		return fmt.Errorf("failed to delete score: %w", err)
+	}
+
+	if statusCode >= 400 {
+		return fmt.Errorf("failed to delete score: HTTP %d: %s", statusCode, string(body))
+	}
+
+	return nil
+}
+
 func (l *Langfuse) Span(s *model.Span, parentID *string) (*model.Span, error) {
 	if s.TraceID == "" {
 		traceID, err := l.createTrace(s.Name)

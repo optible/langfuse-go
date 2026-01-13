@@ -81,6 +81,35 @@ func (c *Client) DoGetRequest(ctx context.Context, urlPath string) ([]byte, int,
 	return body, resp.StatusCode, nil
 }
 
+// DoDeleteRequest performs a raw DELETE request and returns the response body
+func (c *Client) DoDeleteRequest(ctx context.Context, urlPath string) ([]byte, int, error) {
+	fullURL := c.GetHost() + urlPath
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fullURL, nil)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	publicKey := os.Getenv("LANGFUSE_PUBLIC_KEY")
+	secretKey := os.Getenv("LANGFUSE_SECRET_KEY")
+	req.Header.Set("Authorization", basicAuth(publicKey, secretKey))
+	req.Header.Set("Accept", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to execute request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, resp.StatusCode, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	return body, resp.StatusCode, nil
+}
+
 func basicAuth(publicKey, secretKey string) string {
 	auth := publicKey + ":" + secretKey
 	return "Basic " + base64.StdEncoding.EncodeToString([]byte(auth))
