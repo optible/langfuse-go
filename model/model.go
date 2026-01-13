@@ -12,6 +12,7 @@ const (
 	IngestionEventTypeGenerationCreate = "generation-create"
 	IngestionEventTypeGenerationUpdate = "generation-update"
 	IngestionEventTypeScoreCreate      = "score-create"
+	IngestionEventTypeScoreDelete      = "score-delete"
 	IngestionEventTypeSpanCreate       = "span-create"
 	IngestionEventTypeSpanUpdate       = "span-update"
 	IngestionEventTypeEventCreate      = "event-create"
