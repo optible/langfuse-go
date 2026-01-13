@@ -9,6 +9,7 @@ import (
 
 func TestScore_WithTraceID(t *testing.T) {
 	l := New(context.Background())
+	defer l.Flush(context.Background())
 
 	score := &model.Score{
 		TraceID: "test-trace-id",
@@ -32,6 +33,7 @@ func TestScore_WithTraceID(t *testing.T) {
 
 func TestScore_WithSessionID(t *testing.T) {
 	l := New(context.Background())
+	defer l.Flush(context.Background())
 
 	score := &model.Score{
 		SessionID: "test-session-id",
@@ -55,6 +57,7 @@ func TestScore_WithSessionID(t *testing.T) {
 
 func TestScore_WithBothTraceIDAndSessionID(t *testing.T) {
 	l := New(context.Background())
+	defer l.Flush(context.Background())
 
 	score := &model.Score{
 		TraceID:   "test-trace-id",
@@ -83,6 +86,7 @@ func TestScore_WithBothTraceIDAndSessionID(t *testing.T) {
 
 func TestScore_WithoutTraceIDOrSessionID(t *testing.T) {
 	l := New(context.Background())
+	defer l.Flush(context.Background())
 
 	score := &model.Score{
 		Name:  "test-score",
@@ -102,6 +106,7 @@ func TestScore_WithoutTraceIDOrSessionID(t *testing.T) {
 
 func TestScore_PreservesExistingID(t *testing.T) {
 	l := New(context.Background())
+	defer l.Flush(context.Background())
 
 	existingID := "existing-score-id"
 	score := &model.Score{

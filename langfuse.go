@@ -439,7 +439,7 @@ func (l *Langfuse) createTrace(traceName string) (string, error) {
 		return "", errTrace
 	}
 
-	return trace.ID, fmt.Errorf("unable to get trace ID")
+	return trace.ID, nil
 }
 
 func (l *Langfuse) Flush(ctx context.Context) {
