@@ -52,11 +52,11 @@ func (c *Client) GetHost() string {
 	return host
 }
 
-// DoGetRequest performs a raw GET request and returns the response body
-func (c *Client) DoGetRequest(ctx context.Context, urlPath string) ([]byte, int, error) {
+// doRequest performs a raw HTTP request and returns the response body
+func (c *Client) doRequest(ctx context.Context, method, urlPath string) ([]byte, int, error) {
 	fullURL := c.GetHost() + urlPath
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fullURL, nil)
+	req, err := http.NewRequestWithContext(ctx, method, fullURL, nil)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -81,33 +81,14 @@ func (c *Client) DoGetRequest(ctx context.Context, urlPath string) ([]byte, int,
 	return body, resp.StatusCode, nil
 }
 
+// DoGetRequest performs a raw GET request and returns the response body
+func (c *Client) DoGetRequest(ctx context.Context, urlPath string) ([]byte, int, error) {
+	return c.doRequest(ctx, http.MethodGet, urlPath)
+}
+
 // DoDeleteRequest performs a raw DELETE request and returns the response body
 func (c *Client) DoDeleteRequest(ctx context.Context, urlPath string) ([]byte, int, error) {
-	fullURL := c.GetHost() + urlPath
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, fullURL, nil)
-	if err != nil {
-		return nil, 0, fmt.Errorf("failed to create request: %w", err)
-	}
-
-	publicKey := os.Getenv("LANGFUSE_PUBLIC_KEY")
-	secretKey := os.Getenv("LANGFUSE_SECRET_KEY")
-	req.Header.Set("Authorization", basicAuth(publicKey, secretKey))
-	req.Header.Set("Accept", "application/json")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, 0, fmt.Errorf("failed to execute request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, resp.StatusCode, fmt.Errorf("failed to read response body: %w", err)
-	}
-
-	return body, resp.StatusCode, nil
+	return c.doRequest(ctx, http.MethodDelete, urlPath)
 }
 
 func basicAuth(publicKey, secretKey string) string {
