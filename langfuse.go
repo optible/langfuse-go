@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strconv"
 	"time"
@@ -173,7 +174,7 @@ func (l *Langfuse) fetchPrompt(ctx context.Context, name string, opts *GetPrompt
 		return nil, fmt.Errorf("failed to fetch prompt: %w", err)
 	}
 
-	if statusCode >= 400 {
+	if statusCode >= http.StatusBadRequest {
 		return nil, fmt.Errorf("failed to fetch prompt: HTTP %d: %s", statusCode, string(body))
 	}
 
@@ -365,7 +366,7 @@ func (l *Langfuse) DeleteScore(ctx context.Context, scoreID string) error {
 		return fmt.Errorf("failed to delete score: %w", err)
 	}
 
-	if statusCode >= 400 {
+	if statusCode >= http.StatusBadRequest {
 		return fmt.Errorf("failed to delete score: HTTP %d: %s", statusCode, string(body))
 	}
 
