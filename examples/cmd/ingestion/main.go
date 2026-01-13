@@ -10,7 +10,12 @@ import (
 func main() {
 	l := langfuse.New(context.Background())
 
-	trace, err := l.Trace(&model.Trace{Name: "test-trace"})
+	sessionID := "test-session-123"
+
+	trace, err := l.Trace(&model.Trace{
+		Name:      "test-trace",
+		SessionID: sessionID,
+	})
 	if err != nil {
 		panic(err)
 	}
@@ -82,6 +87,19 @@ func main() {
 			TraceID: trace.ID,
 			Name:    "test-score",
 			Value:   0.9,
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	// Score the entire session
+	_, err = l.Score(
+		&model.Score{
+			SessionID: sessionID,
+			Name:      "session-score",
+			Value:     0.85,
+			Comment:   "Overall session quality",
 		},
 	)
 	if err != nil {

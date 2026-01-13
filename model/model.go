@@ -101,6 +101,7 @@ type Score struct {
 	Value         float64 `json:"value,omitempty"`
 	ObservationID string  `json:"observationId,omitempty"`
 	Comment       string  `json:"comment,omitempty"`
+	SessionID     string  `json:"sessionId,omitempty"`
 }
 
 type Span struct {
