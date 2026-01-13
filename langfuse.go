@@ -336,8 +336,8 @@ func (l *Langfuse) GenerationEnd(g *model.Generation) (*model.Generation, error)
 }
 
 func (l *Langfuse) Score(s *model.Score) (*model.Score, error) {
-	if s.TraceID == "" {
-		return nil, fmt.Errorf("trace ID is required")
+	if s.TraceID == "" && s.SessionID == "" {
+		return nil, fmt.Errorf("either trace ID or session ID is required")
 	}
 	s.ID = buildID(&s.ID)
 
@@ -439,7 +439,7 @@ func (l *Langfuse) createTrace(traceName string) (string, error) {
 		return "", errTrace
 	}
 
-	return trace.ID, fmt.Errorf("unable to get trace ID")
+	return trace.ID, nil
 }
 
 func (l *Langfuse) Flush(ctx context.Context) {
