@@ -265,7 +265,3 @@ func main() {
 	l.ClearPromptCache()
 }
 ```
-
-## Who uses langfuse-go?
-
-* [LinGoose](https://github.com/henomis/lingoose) Go framework for building awesome LLM apps
