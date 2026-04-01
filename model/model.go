@@ -80,6 +80,15 @@ type Usage struct {
 	OutputCost float64   `json:"outputCost,omitempty"`
 	TotalCost  float64   `json:"totalCost,omitempty"`
 
+	// UsageDetails provides granular token counts per usage type (e.g., "input", "output",
+	// "cache_creation_input_tokens", "cache_read_input_tokens"). Langfuse uses these keys
+	// to match against model definition prices. Takes priority over Input/Output/Total.
+	UsageDetails map[string]int `json:"usageDetails,omitempty"`
+
+	// CostDetails provides explicit USD costs per usage type. When set, Langfuse uses these
+	// instead of inferring costs from model definitions. Takes priority over InputCost/OutputCost/TotalCost.
+	CostDetails map[string]float64 `json:"costDetails,omitempty"`
+
 	PromptTokens     int `json:"promptTokens,omitempty"`
 	CompletionTokens int `json:"completionTokens,omitempty"`
 	TotalTokens      int `json:"totalTokens,omitempty"`
