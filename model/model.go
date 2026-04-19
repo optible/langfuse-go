@@ -67,8 +67,21 @@ type Generation struct {
 	Model               string           `json:"model,omitempty"`
 	ModelParameters     any              `json:"modelParameters,omitempty"`
 	Usage               Usage            `json:"usage,omitempty"`
-	PromptName          string           `json:"promptName,omitempty"`
-	PromptVersion       int              `json:"promptVersion,omitempty"`
+
+	// UsageDetails provides granular token counts per usage type (e.g., "input", "output",
+	// "cache_creation_input_tokens", "cache_read_input_tokens"). Langfuse matches these keys
+	// against model definition prices to compute cost. Takes priority over Usage.Input/Output/Total.
+	// Must be a top-level field on the generation body — nesting inside Usage is ignored by the
+	// Langfuse ingestion API.
+	UsageDetails map[string]int `json:"usageDetails,omitempty"`
+
+	// CostDetails provides explicit USD costs per usage type. When set, Langfuse uses these
+	// instead of inferring costs from model definitions. Takes priority over Usage.*Cost fields.
+	// Must be a top-level field on the generation body — nesting inside Usage is ignored.
+	CostDetails map[string]float64 `json:"costDetails,omitempty"`
+
+	PromptName    string `json:"promptName,omitempty"`
+	PromptVersion int    `json:"promptVersion,omitempty"`
 }
 
 type Usage struct {
@@ -79,15 +92,6 @@ type Usage struct {
 	InputCost  float64   `json:"inputCost,omitempty"`
 	OutputCost float64   `json:"outputCost,omitempty"`
 	TotalCost  float64   `json:"totalCost,omitempty"`
-
-	// UsageDetails provides granular token counts per usage type (e.g., "input", "output",
-	// "cache_creation_input_tokens", "cache_read_input_tokens"). Langfuse uses these keys
-	// to match against model definition prices. Takes priority over Input/Output/Total.
-	UsageDetails map[string]int `json:"usageDetails,omitempty"`
-
-	// CostDetails provides explicit USD costs per usage type. When set, Langfuse uses these
-	// instead of inferring costs from model definitions. Takes priority over InputCost/OutputCost/TotalCost.
-	CostDetails map[string]float64 `json:"costDetails,omitempty"`
 
 	PromptTokens     int `json:"promptTokens,omitempty"`
 	CompletionTokens int `json:"completionTokens,omitempty"`
